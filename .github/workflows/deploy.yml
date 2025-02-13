@@ -1,0 +1,47 @@
+name: CD Pipeline
+
+# Trigger on push to the main branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:  # Job name
+    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+
+    steps:
+      # Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+         # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"  # Replace with your Python version
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Deploy the application (example using SSH)
+      - name: Deploy application
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Add your SSH private key to GitHub Secrets
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}  # Add your server IP/hostname to GitHub Secrets
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}  # Add your server username to GitHub Secrets
+          REMOTE_DIR: ${{ secrets.REMOTE_DIR }}  # Add your deployment directory to GitHub Secrets
+        run: |
+          # Install SSH key
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          # Copy files to the server
+          scp -r . $REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR
+
+          # Restart the application (example using systemd)
+          ssh $REMOTE_USER@$REMOTE_HOST "sudo systemctl restart fastapi-app"
