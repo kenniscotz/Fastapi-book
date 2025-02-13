@@ -29,7 +29,11 @@ jobs:
 
       # Deploy the application (example using SSH)
       - name: Deploy application
-        env: My_Secrets
+        env: 
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Add your SSH private key to GitHub Secrets
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}  # Add your server IP/hostname to GitHub Secrets
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}  # Add your server username to GitHub Secrets
+        REMOTE_DIR: ${{ secrets.REMOTE_DIR }}  # Add your deployment directory to GitHub Secrets
          
          run: |
           # Install SSH key
