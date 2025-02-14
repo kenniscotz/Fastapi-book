@@ -32,6 +32,6 @@ jobs:
           username: ${{secrets.AZURE_SSH_USER}}
           key: ${{secrets.AZURE_SSH_KEY}}
           script: |
-            cd fastapi-book-project/
+            cd Fastapi-book/
             git pull origin main
             sudo systemctl restart fastapi.service
