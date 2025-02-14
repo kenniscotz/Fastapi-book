@@ -31,6 +31,9 @@ jobs:
           host: ${{secrets.AZURE_SSH_HOST}}
           username: ${{secrets.AZURE_SSH_USER}}
           key: ${{secrets.AZURE_SSH_KEY}}
+          timeout: 60s  
+          command_timeout: 15m  
+
           script: |
             cd Fastapi-book/
             git pull origin main
